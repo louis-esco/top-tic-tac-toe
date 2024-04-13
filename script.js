@@ -3,10 +3,12 @@ function gameboard() {
     const cols = 3;
     const board = [];
 
-    for (let i = 0; i < rows; i++) {
-        board[i] = [];
-        for (let j = 0; j < cols; j++) {
-            board[i].push(cell());
+    const resetBoard = () => {
+        for (let i = 0; i < rows; i++) {
+            board[i] = [];
+            for (let j = 0; j < cols; j++) {
+                board[i].push(cell());
+            }
         }
     }
 
@@ -19,9 +21,12 @@ function gameboard() {
         board[row][column].addToken(player);
     }
 
+    resetBoard();
+
     return {
         getBoard,
-        playToken
+        playToken,
+        resetBoard
     }
 }
 
