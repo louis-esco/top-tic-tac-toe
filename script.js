@@ -3,7 +3,7 @@ function gameboard() {
     const cols = 3;
     const board = [];
 
-    const resetBoard = () => {
+    const initBoard = () => {
         for (let i = 0; i < rows; i++) {
             board[i] = [];
             for (let j = 0; j < cols; j++) {
@@ -12,16 +12,24 @@ function gameboard() {
         }
     }
 
+    const resetBoard = () => {
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                board[i][j].resetCell();
+            }
+        }
+    }
+
     const getBoard = () => board;
 
     const playToken = (row, column, player) => {
-
+        // Prevents player from playing token in a cell that already has token
         if (board[row][column].getValue() !== "") return "error";
 
         board[row][column].addToken(player);
     }
 
-    resetBoard();
+    initBoard();
 
     return {
         getBoard,
@@ -39,9 +47,14 @@ function cell() {
 
     const getValue = () => value;
 
+    const resetCell = () => {
+        value = "";
+    }
+
     return {
         addToken,
-        getValue
+        getValue,
+        resetCell
     };
 }
 
@@ -63,6 +76,11 @@ function gameController(playerOneName, playerTwoName) {
     const players = [playerOne, playerTwo];
 
     let activePlayer = players[0];
+
+    const resetGame = () => {
+        board.resetBoard();
+        activePlayer = players[0];
+    }
 
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -99,11 +117,7 @@ function gameController(playerOneName, playerTwoName) {
     }
 
     const playRound = (row, column) => {
-        if (board.playToken(row, column, getActivePlayer().token) === "error") {
-            console.log("This cell is not available, please play in another cell")
-        } else {
-            console.log(`${getActivePlayer().name} plays a "${getActivePlayer().token}" in row:${parseInt(row) + 1} and column:${parseInt(column) + 1}`);
-
+        if (board.playToken(row, column, getActivePlayer().token) !== "error") {
             board.playToken(row, column, getActivePlayer().token);
 
             if (checkResult() === "x" || checkResult() === "o") return;
@@ -116,7 +130,8 @@ function gameController(playerOneName, playerTwoName) {
         getActivePlayer,
         playRound,
         getBoard: board.getBoard,
-        checkResult
+        checkResult,
+        resetGame
     }
 }
 
@@ -124,6 +139,7 @@ function screenController() {
     const game = gameController('Louis', 'Juliette');
     const playerTurnDiv = document.querySelector('.player-turn');
     const boardDiv = document.querySelector('.board');
+    const resetBtn = document.querySelector('.reset');
 
     const updateScreen = () => {
         boardDiv.textContent = "";
@@ -165,7 +181,14 @@ function screenController() {
         updateScreen();
     }
 
+    function reset() {
+        game.resetGame();
+        updateScreen();
+    }
+
     boardDiv.addEventListener('click', clickHandlerBoard);
+    resetBtn.addEventListener('click', reset)
+
 
     updateScreen();
 }
