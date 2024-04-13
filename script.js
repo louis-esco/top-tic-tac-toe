@@ -65,11 +65,6 @@ function gameController(playerOneName, playerTwoName) {
 
     const getActivePlayer = () => activePlayer;
 
-    const printNewRound = () => {
-        board.printBoard();
-        console.log(`${getActivePlayer().name}'s turn !'`);
-    }
-
     const checkResult = () => {
         for (let i = 0; i < 3; i++) {
             // Check winning columns
@@ -109,15 +104,11 @@ function gameController(playerOneName, playerTwoName) {
             if (checkResult() === "x" || checkResult() === "o") return;
 
             switchPlayerTurn();
-            printNewRound();
         }
     }
 
-    printNewRound();
-
     return {
         getActivePlayer,
-        printNewRound,
         playRound,
         getBoard: board.getBoard,
         checkResult
