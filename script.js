@@ -181,13 +181,13 @@ function screenController() {
         updateScreen();
     }
 
-    function reset() {
+    function resetDisplay() {
         game.resetGame();
         updateScreen();
     }
 
     boardDiv.addEventListener('click', clickHandlerBoard);
-    resetBtn.addEventListener('click', reset)
+    resetBtn.addEventListener('click', resetDisplay)
 
 
     updateScreen();
