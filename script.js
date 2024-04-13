@@ -111,9 +111,7 @@ function gameController(playerOneName, playerTwoName) {
 
             board.playToken(row, column, getActivePlayer().token);
 
-            if (checkResult() === "x" || checkResult() === "o") {
-                console.log("Winner is " + checkResult());
-            }
+            if (checkResult() === "x" || checkResult() === "o") return;
 
             switchPlayerTurn();
             printNewRound();
@@ -126,7 +124,8 @@ function gameController(playerOneName, playerTwoName) {
         getActivePlayer,
         printNewRound,
         playRound,
-        getBoard: board.getBoard
+        getBoard: board.getBoard,
+        checkResult
     }
 }
 
@@ -141,7 +140,11 @@ function screenController() {
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
 
-        playerTurnDiv.textContent = `It's ${activePlayer.name}'s turn !`;
+        if (game.checkResult() === "x" || game.checkResult() === "o") {
+            playerTurnDiv.textContent = `${activePlayer.name} wins !`;
+        } else {
+            playerTurnDiv.textContent = `It's ${activePlayer.name}'s turn !`;
+        }
 
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
@@ -150,6 +153,10 @@ function screenController() {
                 cellButton.dataset.row = i;
                 cellButton.dataset.column = j;
                 cellButton.textContent = board[i][j].getValue();
+
+                if (game.checkResult() === "x" || game.checkResult() === "o") {
+                    cellButton.disabled = true
+                }
 
                 boardDiv.appendChild(cellButton);
             }
