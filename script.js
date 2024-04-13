@@ -9,6 +9,7 @@ function gameboard() {
             board[i].push(cell());
         }
     }
+
     const getBoard = () => board;
 
     const playToken = (row, column, player) => {
@@ -18,15 +19,9 @@ function gameboard() {
         board[row][column].addToken(player);
     }
 
-    const printBoard = () => {
-        const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()));
-        console.log(boardWithCellValues);
-    };
-
     return {
         getBoard,
-        playToken,
-        printBoard
+        playToken
     }
 }
 
@@ -139,13 +134,13 @@ function screenController() {
 
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
-
+        // Displays winner or active player
         if (game.checkResult() === "x" || game.checkResult() === "o") {
             playerTurnDiv.textContent = `${activePlayer.name} wins !`;
         } else {
             playerTurnDiv.textContent = `It's ${activePlayer.name}'s turn !`;
         }
-
+        // Creates board button display
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
                 const cellButton = document.createElement('button')
