@@ -75,11 +75,21 @@ function gameController(playerOneName, playerTwoName) {
     const playerTwo = createPlayer(playerTwoName, "o");
     const players = [playerOne, playerTwo];
 
+    let result = {
+        win: false,
+        token: "",
+        resetResult() {
+            this.win = false;
+            this.token = ""
+        }
+    }
+
     let activePlayer = players[0];
 
     const resetGame = () => {
         board.resetBoard();
         activePlayer = players[0];
+        result.resetResult();
     }
 
     const switchPlayerTurn = () => {
@@ -94,33 +104,45 @@ function gameController(playerOneName, playerTwoName) {
             if (board.getBoard()[0][i].getValue() === board.getBoard()[1][i].getValue() &&
                 board.getBoard()[1][i].getValue() === board.getBoard()[2][i].getValue() &&
                 board.getBoard()[0][i].getValue() !== "") {
-                return board.getBoard()[0][i].getValue();
+                result.win = true;
+                result.token = board.getBoard()[0][i].getValue();
             }
             // Check winning rows
             if (board.getBoard()[i][0].getValue() === board.getBoard()[i][1].getValue() &&
                 board.getBoard()[i][1].getValue() === board.getBoard()[i][2].getValue() &&
                 board.getBoard()[i][0].getValue() !== "") {
-                return board.getBoard()[i][0].getValue();
+                result.win = true;
+                result.token = board.getBoard()[i][0].getValue();
             }
         }
         // Check diagonal win
         if (board.getBoard()[0][0].getValue() === board.getBoard()[1][1].getValue() &&
             board.getBoard()[1][1].getValue() === board.getBoard()[2][2].getValue() &&
             board.getBoard()[0][0].getValue() !== "") {
-            return board.getBoard()[0][0].getValue();
+            result.win = true;
+            result.token = board.getBoard()[0][0].getValue();
         }
         if (board.getBoard()[0][2].getValue() === board.getBoard()[1][1].getValue() &&
             board.getBoard()[1][1].getValue() === board.getBoard()[2][0].getValue() &&
             board.getBoard()[0][2].getValue() !== "") {
-            return board.getBoard()[0][2].getValue();
+            result.win = true;
+            result.token = board.getBoard()[0][2].getValue();
         }
+
+        // Check tie game
+        if (board.getBoard().every(row => row.every(cell => cell.getValue() !== ""))) {
+            result.win = true;
+            result.token = "tie";
+            console.log("tie");
+        }
+        return result;
     }
 
     const playRound = (row, column) => {
         if (board.playToken(row, column, getActivePlayer().token) !== "error") {
             board.playToken(row, column, getActivePlayer().token);
 
-            if (checkResult() === "x" || checkResult() === "o") return;
+            if (checkResult().win === true) return;
 
             switchPlayerTurn();
         }
@@ -131,7 +153,7 @@ function gameController(playerOneName, playerTwoName) {
         playRound,
         getBoard: board.getBoard,
         checkResult,
-        resetGame
+        resetGame,
     }
 }
 
@@ -140,15 +162,21 @@ function screenController() {
     const playerTurnDiv = document.querySelector('.player-turn');
     const boardDiv = document.querySelector('.board');
     const resetBtn = document.querySelector('.reset');
+    let result;
 
     const updateScreen = () => {
+        result = game.checkResult()
         boardDiv.textContent = "";
 
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
         // Displays winner or active player
-        if (game.checkResult() === "x" || game.checkResult() === "o") {
-            playerTurnDiv.textContent = `${activePlayer.name} wins !`;
+        if (result.win === true) {
+            if (result.token === "tie") {
+                playerTurnDiv.textContent = "It's a tie game, no one wins !"
+            } else {
+                playerTurnDiv.textContent = `${activePlayer.name} wins !`;
+            }
         } else {
             playerTurnDiv.textContent = `It's ${activePlayer.name}'s turn !`;
         }
@@ -161,7 +189,8 @@ function screenController() {
                 cellButton.dataset.column = j;
                 cellButton.textContent = board[i][j].getValue();
 
-                if (game.checkResult() === "x" || game.checkResult() === "o") {
+                // Ajouter les conditions de victoire ici
+                if (result.win === true) {
                     cellButton.disabled = true
                 }
 
@@ -194,3 +223,9 @@ function screenController() {
 }
 
 screenController();
+
+// Ajouter un booleen de valeur de victoire
+// Ajouter une condition en cas de match nul
+// Ajouter un input pour le nom des joueurs, avec une valeur par défaut
+// Faire un design un peu plus sympa
+// Changer la couleur de la ligne qui gagne
