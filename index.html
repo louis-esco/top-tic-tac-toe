@@ -10,10 +10,27 @@
 
 <body>
     <div class="container">
-        <button class="reset">Reset board</button>
+        <div class="buttons">
+            <button class="names-modal">Change player names</button>
+            <button class="reset">Reset game</button>
+        </div>
         <h1 class="player-turn"></h1>
         <div class="board"></div>
     </div>
+
+    <dialog>
+        <div>Changing player names will start a new game</div>
+        <form action="" method="dialog">
+            <label for="p1">Player 1:</label>
+            <input type="text" id="p1">
+
+            <label for="p2">Player 2</label>
+            <input type="text" id="p2">
+
+            <button class="submitBtn">Save changes</button>
+        </form>
+
+    </dialog>
 
     <script src="./script.js"></script>
 </body>

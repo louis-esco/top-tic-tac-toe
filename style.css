@@ -1,3 +1,7 @@
+body {
+    font-family: system-ui, sans-serif;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -14,22 +18,51 @@
     padding: 2px;
 }
 
+button {
+    font-family: inherit;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
 button.cell {
     font-size: 4rem;
     border: none;
     background-color: #60a5fa;
     border-radius: 10px;
     color: white;
-    font-family: system-ui, sans-serif;
     font-weight: bold;
-    transition: background-color 2s;
+    transition: background-color 300ms;
 }
 
 button.cell:disabled {
     background-color: #bfdbfe;
 }
 
-/* 
-.cell:hover {
-    color: black;
-} */
+button.cell:hover:enabled {
+    background-color: #93c5fd;
+}
+
+button.reset,
+button.names-modal {
+    background-color: #d1d5db;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 20px;
+    font-size: 1rem;
+}
+
+div.player-turn {
+    transition: all 1s;
+}
+
+dialog {
+    border: none;
+    border-radius: 20px;
+}
+
+dialog::backdrop {
+    background-color: grey;
+    opacity: 0.9;
+}

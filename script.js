@@ -12,14 +12,6 @@ function gameboard() {
         }
     }
 
-    const resetBoard = () => {
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < cols; j++) {
-                board[i][j].resetCell();
-            }
-        }
-    }
-
     const getBoard = () => board;
 
     const playToken = (row, column, player) => {
@@ -34,7 +26,6 @@ function gameboard() {
     return {
         getBoard,
         playToken,
-        resetBoard
     }
 }
 
@@ -47,14 +38,9 @@ function cell() {
 
     const getValue = () => value;
 
-    const resetCell = () => {
-        value = "";
-    }
-
     return {
         addToken,
         getValue,
-        resetCell
     };
 }
 
@@ -68,7 +54,7 @@ function createPlayer(playerName, playerToken) {
     }
 }
 
-function gameController(playerOneName, playerTwoName) {
+function gameController(playerOneName = "Player 1", playerTwoName = "Player 2") {
     const board = gameboard();
 
     const playerOne = createPlayer(playerOneName, "x");
@@ -77,20 +63,10 @@ function gameController(playerOneName, playerTwoName) {
 
     let result = {
         win: false,
-        token: "",
-        resetResult() {
-            this.win = false;
-            this.token = ""
-        }
+        token: ""
     }
 
     let activePlayer = players[0];
-
-    const resetGame = () => {
-        board.resetBoard();
-        activePlayer = players[0];
-        result.resetResult();
-    }
 
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -153,15 +129,21 @@ function gameController(playerOneName, playerTwoName) {
         playRound,
         getBoard: board.getBoard,
         checkResult,
-        resetGame,
     }
 }
 
-function screenController() {
-    const game = gameController('Louis', 'Juliette');
+function screenController(player1, player2) {
+    let p1 = player1;
+    let p2 = player2;
+    const game = gameController(p1, p2);
+
     const playerTurnDiv = document.querySelector('.player-turn');
     const boardDiv = document.querySelector('.board');
     const resetBtn = document.querySelector('.reset');
+    const playersBtn = document.querySelector('.names-modal');
+    const modal = document.querySelector('dialog');
+    const form = document.querySelector('form');
+    const submitBtn = document.querySelector('.submitBtn');
     let result;
 
     const updateScreen = () => {
@@ -210,22 +192,32 @@ function screenController() {
         updateScreen();
     }
 
-    function resetDisplay() {
-        game.resetGame();
-        updateScreen();
+    function submitNames(e) {
+        // e.preventDefault();
+        const input1 = document.querySelector('#p1');
+        const input2 = document.querySelector('#p2');
+        screenController(input1.value, input2.value);
+        // modal.close();
+        console.log('I print');
+        form.reset();
     }
 
-    boardDiv.addEventListener('click', clickHandlerBoard);
-    resetBtn.addEventListener('click', resetDisplay)
+    function resetDisplay() {
+        screenController(p1, p2);
+    }
 
+    submitBtn.addEventListener('click', submitNames, { once: true });
+    boardDiv.addEventListener('click', clickHandlerBoard);
+    resetBtn.addEventListener('click', resetDisplay, { once: true });
+    playersBtn.addEventListener('click', () => {
+        modal.showModal();
+    }, { once: true });
 
     updateScreen();
+
 }
 
 screenController();
 
-// Ajouter un booleen de valeur de victoire
-// Ajouter une condition en cas de match nul
 // Ajouter un input pour le nom des joueurs, avec une valeur par défaut
-// Faire un design un peu plus sympa
 // Changer la couleur de la ligne qui gagne
