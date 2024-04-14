@@ -171,7 +171,6 @@ function screenController(player1, player2) {
                 cellButton.dataset.column = j;
                 cellButton.textContent = board[i][j].getValue();
 
-                // Ajouter les conditions de victoire ici
                 if (result.win === true) {
                     cellButton.disabled = true
                 }
@@ -193,11 +192,9 @@ function screenController(player1, player2) {
     }
 
     function submitNames(e) {
-        // e.preventDefault();
         const input1 = document.querySelector('#p1');
         const input2 = document.querySelector('#p2');
         screenController(input1.value, input2.value);
-        // modal.close();
         console.log('I print');
         form.reset();
     }
@@ -218,6 +215,3 @@ function screenController(player1, player2) {
 }
 
 screenController();
-
-// Ajouter un input pour le nom des joueurs, avec une valeur par défaut
-// Changer la couleur de la ligne qui gagne
